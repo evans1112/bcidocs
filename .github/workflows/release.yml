@@ -1,4 +1,4 @@
-name: Build and Deploy MkDoc
+name: Build and Deploy MkDocs
 
 on:
   push:
@@ -6,19 +6,26 @@ on:
       - master
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
 
-      - name: Install dependencies
-        run: pip install mkdocs mkdocs-material
+    - name: Install dependencies
+      run: pip install mkdocs mkdocs-material
 
-      - name: Build MkDocs
-        run: mkdocs build
+    - name: Build MkDocs
+      run: mkdocs build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        publish_dir: ./site
